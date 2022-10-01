@@ -9,6 +9,7 @@
         {% for room in rooms %}
             <div>
                 <a href="{% url 'update-room' room.id %}">Edit</a>
+                <a href="{% url 'delete-room' room.id%}">Delete</a>
                 <a href="{% url 'create-room' %}">Create Room</a>
                 <span>@{{room.host.username}}</span>
                 <!-- Important line next: We are accesing room via name i.e 'room' that we specified -->
