@@ -22,7 +22,7 @@ class Room(models.Model):
     # Takes a snapshot only when created
     created = models.DateTimeField(auto_now_add=True)
 
-
+    # To view the newest Room first
     class Meta:
         ordering = ['-updated', '-created']
 
