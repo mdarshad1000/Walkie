@@ -1,3 +1,4 @@
+from hashlib import blake2b
 from tkinter import CASCADE
 from django.db import models
 from django.contrib.auth.models import User
@@ -16,7 +17,8 @@ class Room(models.Model):
     topic = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
-    # participants = 
+    # Many to many relationship
+    participants = models.ManyToManyField(User, related_name='participants', blank=True)
     # Takes a snapshot everytime we save
     updated = models.DateTimeField(auto_now=True)
     # Takes a snapshot only when created
@@ -41,7 +43,7 @@ class Message(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     body = models.TextField()
     updated = models.DateTimeField(auto_now=True)
-    creâted = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         # Display first 50 characters 
