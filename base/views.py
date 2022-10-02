@@ -116,6 +116,12 @@ def room(request, pk):
     return render(request, 'base/room.html', context)
 
 
+def userProfile(request):
+    context = {}
+    return(request, 'base/profile.html', context)
+
+
+
 @login_required(login_url='login')
 def createRoom(request):
     form = RoomForm()
