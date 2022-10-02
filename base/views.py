@@ -88,8 +88,8 @@ def home(request):
     topics = Topic.objects.all()
     room_count = rooms.count()
 
-    # For recent activity
-    room_messages = Message.objects.all()
+    # For recent activity and filtering only by the selected topic
+    room_messages = Message.objects.filter(Q(room__topic__name__icontains=q))
 
     context = {'rooms': rooms, 'topics': topics, 'room_count':room_count, 'room_messages':room_messages}
     return render(request, 'base/home.html', context)  # {'how to address in template':what to pass}
@@ -98,7 +98,7 @@ def home(request):
 def room(request, pk):
     room = Room.objects.get(id=pk)
     # `message_set`queries sets of all messages related to Room (parent model)
-    room_messages = room.message_set.all().order_by('-created')
+    room_messages = room.message_set.all()
     # To get all the participants
     participants = room.participants.all()
     if request.method == 'POST':
