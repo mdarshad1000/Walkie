@@ -133,6 +133,7 @@ def createRoom(request):
     if request.method == 'POST':
         form = RoomForm(request.POST)
         if form.is_valid():
+            # To create a room with host as the user who is already logged in.
             room = form.save(commit=False)
             room.host = request.user
             room.save()
