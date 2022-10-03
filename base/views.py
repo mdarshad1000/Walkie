@@ -86,7 +86,7 @@ def home(request):
                                 Q(description__icontains=q)
     )
 
-    topics = Topic.objects.all()
+    topics = Topic.objects.all()[0:5] # to render first five
     room_count = rooms.count()
 
     # For recent activity and filtering only by the selected topic
@@ -223,7 +223,18 @@ def updateUser(request):
     return render(request, 'base/update_user.html', context)
 
 
+# for mobile version
+def topicsPage(request):
+    q = request.GET.get('q') if request.GET.get('q') != None else ''
+    topics = Topic.objects.filter(name__icontains=q)
+    context = {'topics':topics}
+    return render(request, 'base/topics.html', context)
 
+
+def activityPage(request):
+    room_messages = Message.objects.all()
+    context = {'room_messages':room_messages}
+    return render(request, 'base/activity.html', context)
 
 
 
