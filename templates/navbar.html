@@ -29,7 +29,7 @@
       <!-- Logged In -->
       {% if request.user.is_authenticated %}
       <div class="header__user">
-        <a href="profile.html">
+        <a href="{% url 'update-user' %}">
           <div class="avatar avatar--medium active">
             <img src="{% static 'images/avatar.svg' %}" />
           </div>
@@ -57,8 +57,8 @@
         {% endif %}
 
       <div class="dropdown-menu">
-        <a href="settings.html" class="dropdown-link"
-          ><svg
+        <a href="{% url 'update-user' %}" class="dropdown-link">
+          <svg
             version="1.1"
             xmlns="http://www.w3.org/2000/svg"
             width="32"

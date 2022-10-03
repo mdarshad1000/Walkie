@@ -1,3 +1,4 @@
+from unicodedata import name
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.db.models import Q
@@ -7,7 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from .models import Room, Topic, Message
-from .forms import RoomForm
+from .forms import RoomForm, UserForm
 
 # Create your views here.
 # rooms = [
@@ -132,13 +133,23 @@ def createRoom(request):
     topics = Topic.objects.all()
 
     if request.method == 'POST':
-        form = RoomForm(request.POST)
-        if form.is_valid():
-            # To create a room with host as the user who is already logged in.
-            room = form.save(commit=False)
-            room.host = request.user
-            room.save()
-            return redirect('home')
+        # Get topic name
+        topic_name = request.POST.get('topic')
+        '''
+        `get or create` --> gets a value that's already been used before, create is False in that case.
+         whereas if the value isn't there already then a new value is created.
+        '''
+        # gets a value, if can't find then creates it.
+        topic, created = Topic.objects.get_or_create(name=topic_name)
+
+        # Room creation
+        Room.objects.create(
+            host=request.user,
+            topic=topic,
+            name=request.POST.get('name'),
+            description=request.POST.get('description')
+        )
+        return redirect('home')
 
     context = {'form': form, 'topics':topics}
     return render(request, 'base/room_form.html', context)
@@ -157,13 +168,15 @@ def updateRoom(request, pk):
 
 
     if request.method == 'POST':
-        # `instance` here will replace the pre filled value
-        form = RoomForm(request.POST, instance=room)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
+        topic_name = request.POST.get('topic')
+        topic, created = Topic.objects.get_or_create(name=topic_name)
+        room.name = request.POST.get('name')
+        room.topic = topic
+        room.description = request.POST.get('description')
+        room.save()
+        return redirect('home')
 
-    context = {'form': form, 'topics':topics}
+    context = {'form': form, 'topics':topics, 'room':room}
     return render(request, 'base/room_form.html', context)
 
 
@@ -193,3 +206,40 @@ def deleteMessage(request, pk):
         message.delete()
         return redirect('home')
     return render(request, 'base/delete.html', {'obj':message})
+
+
+
+@login_required(login_url='login')
+def updateUser(request):
+    user=request.user
+    form = UserForm(instance=user)
+
+    if request.method == 'POST':
+        form = UserForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('user-profile', pk=user.id)
+    context = {'form':form}
+    return render(request, 'base/update_user.html', context)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# MISC: To create a form
+# form = RoomForm(request.POST)
+# if form.is_valid():
+#     # To create a room with host as the user who is already logged in.
+#     room = form.save(commit=False)
+#     room.host = request.user
+#     room.save()
