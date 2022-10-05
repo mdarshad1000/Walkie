@@ -1,8 +1,8 @@
 from dataclasses import fields
 from pyexpat import model
 from django.forms import ModelForm
-from django.contrib.auth.models import User
-from .models import Room
+# from django.contrib.auth.models import User
+from .models import Room, User
 
 
 # Creating form based on the db models
