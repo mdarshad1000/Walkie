@@ -128,7 +128,10 @@ STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static'
-    ]
+]
+
+# User uplaoded files will go here
+MEDIA_ROOT = BASE_DIR / 'static/images'
 
 # STATIC_ROOT = [
 
